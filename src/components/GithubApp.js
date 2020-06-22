@@ -27,12 +27,13 @@ const GithubApp = () => {
                 }
             });
             setLanguages([]);
+            const l = [];
+            l.push(["Languages", "Count"]);
             languageMap.forEach((value, key) => {
-                setLanguages(languages => languages.concat({
-                    language: key,
-                    count: value
-                }));
-            })
+                l.push([key, value]);
+                
+            });
+            setLanguages(languages => l);
         }
         setFetching(false);
     }
@@ -48,10 +49,10 @@ const GithubApp = () => {
             />
             <button onClick={fetchUserdetails}>Fetch</button>
             <div>
-                
+                {languages.length > 0 && !fetching
+                    && <MyPieChart languages={languages} /> }
             </div>
-            {languages.length > 0 && !fetching
-                && <MyPieChart languages={languages} /> }
+            
         </div>
     )
 };
