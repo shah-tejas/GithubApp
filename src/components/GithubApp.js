@@ -11,6 +11,8 @@ const GithubApp = () => {
     const [errormsg, setErrormsg] = useState("");
     const [userfullname, setUserfullname] = useState("");
     const [avatarsrc, setAvatarsrc] = useState("");
+    const [followers, setFollowers] = useState(0);
+    const [following, setFollowing] = useState(0);
 
     const myHeaders = new Headers();
     const authHeader = "Basic " + btoa(process.env.REACT_APP_GITHUB_CLIENT_ID + ":" + process.env.REACT_APP_GITHUB_CLIENT_SECRET);
@@ -33,6 +35,8 @@ const GithubApp = () => {
         if(user) { 
             setUserfullname(user.name);
             setAvatarsrc(user.avatar_url);
+            setFollowers(user.followers);
+            setFollowing(user.following);
         } else {
             setErrormsg("Not a valid user");
         }
@@ -94,10 +98,24 @@ const GithubApp = () => {
                 {languages.length > 0 && !fetching
                     &&
                     <div>
-                        {
-                            avatarsrc &&
-                            <Avatar src={avatarsrc} />
-                        }
+                        <div>
+                            {
+                                avatarsrc &&
+                                <Avatar src={avatarsrc} />
+                            }
+                            {
+                                userfullname &&
+                                <span><br/>{userfullname}</span>
+                            }
+                            {
+                                followers &&
+                                <p>Followers: {followers}</p>
+                            }
+                            {
+                                following &&
+                                <p>Following {following}</p>
+                            }
+                        </div>
                         <MyPieChart languages={languages} userfullname={userfullname} />
                     </div>    
                 }
