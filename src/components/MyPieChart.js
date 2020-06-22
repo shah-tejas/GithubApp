@@ -1,8 +1,9 @@
 import React from 'react';
 import { Chart } from "react-google-charts";
 
-const MyPieChart = ({languages}) => {
+const MyPieChart = ({languages, userfullname}) => {
 
+    const title = `${userfullname}'s preferred Languages`;
 
     return(
         <div>
@@ -14,7 +15,7 @@ const MyPieChart = ({languages}) => {
                 loader={<div>Loading Chart</div>}
                 data={languages}
                 options={{
-                    title: `User's Preferred Language`,
+                    title: title,
                 }}
             />
 
