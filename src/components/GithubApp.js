@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import './GithubApp.scss';
 import MyPieChart from './MyPieChart';
+import Button from '@material-ui/core/Button';
 
 const GithubApp = () => {
     const [username, setUsername] = useState("");
     const [languages, setLanguages] = useState([]);
     const [fetching, setFetching] = useState(false);
+
+    const myHeaders = new Headers();
+    const authHeader = "Basic " + btoa(process.env.REACT_APP_GITHUB_CLIENT_ID + ":" + process.env.REACT_APP_GITHUB_CLIENT_SECRET);
+    myHeaders.append("Authorization", authHeader);
+
+    const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
 
     const handleChange = (event) => {
         setUsername(event.target.value);
@@ -13,9 +24,9 @@ const GithubApp = () => {
 
     const fetchUserdetails = async () => {
         setFetching(true);
-        const resp = await fetch(`https://api.github.com/users/${username}/repos`);
+        const resp = await fetch(`https://api.github.com/users/${username}/repos`, requestOptions);
         const userRepositories = await resp.json();
-        if(userRepositories) {
+        if(userRepositories && userRepositories.length > 0) {
             const languageMap = new Map();
             userRepositories.forEach((repo) => {
                 if(repo.language) {
@@ -41,13 +52,20 @@ const GithubApp = () => {
     return (
         <div className="container">
             <h3>What language does User code in?</h3>
+            <p>(based on user's contributions to public Github repositories)</p>
             <input 
                 type="text"
                 placeholder="Enter User's Github username"
                 value={username}
                 onChange={handleChange}
             />
-            <button onClick={fetchUserdetails}>Fetch</button>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={fetchUserdetails}
+            >
+                Fetch
+            </Button>
             <div>
                 {languages.length > 0 && !fetching
                     && <MyPieChart languages={languages} /> }
